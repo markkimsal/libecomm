@@ -1,0 +1,15 @@
+<?php
+//copy this file to tests/teststrap.php
+
+//set this file to your cognifty installation if you are 
+// performing integration tests
+define('BASE_DIR', '');
+
+$here = dirname(__FILE__);
+
+define('LEC_LIB_DIR', '../src/lib/Lec/');
+define('PHM_LIB_DIR', '../src/lib/Phemto/');
+define('TRF_LIB_DIR', $here.'/../src/lib/Thrift/');
+define('TRD_SRC_DIR', '../src/3rdparty/');
+
+
