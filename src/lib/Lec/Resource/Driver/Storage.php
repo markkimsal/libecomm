@@ -192,6 +192,7 @@ class Lec_Resource_Driver_Storage_Cassandra extends Lec_Resource_Driver_Storage_
 			$this->client = new CassandraClient($protocol);
 			$this->transport->open();
 		} catch(Exception $e) {
+			throw $e;
 			//eliminate any NPEs
 			$this->client = new CassandraClient(NULL);
 		}

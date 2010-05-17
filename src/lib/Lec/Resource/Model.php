@@ -15,6 +15,7 @@ class Lec_Resource_Model {
 	public $__nuls       = array();
 	public $__bins       = array();
 	public $__uniqs      = array();
+	public $__typeMap    = array();
 
 	public function __construct($storageKind='', $id=-1) {
 		if ($storageKind != '') {
@@ -44,6 +45,7 @@ class Lec_Resource_Model {
 			$indexer = Lec_Resource_Loader::loadIndexer();
 			$indexer->indexAdd($this, $this->getStorageId());
 		}
+		return $this->getStorageId();
 	}
 
 	public function preSave() {
@@ -110,5 +112,26 @@ class Lec_Resource_Model {
 			$storable[$k] = $v;
 		}
 		return $storable;
+	}
+
+	/**
+	 * Return a string that gives a hint to the type of storage for a particular field
+	 *
+	 * @return String  storage requirement type hint
+	 */
+	public function getFieldKind($field) {
+		if (isset($this->__typeMap[$field])) {
+			return $this->__typeMap[$field];
+		} else {
+			return 'string';
+		}
+	}
+
+	public function set($k, $v) {
+		$this->{$k} = $v;
+	}
+
+	public function get($k) {
+		return isset($this->{$k})? $this->{$k}:NULL;
 	}
 }
