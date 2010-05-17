@@ -12,4 +12,12 @@ define('PHM_LIB_DIR', '../src/lib/Phemto/');
 define('TRF_LIB_DIR', $here.'/../src/lib/Thrift/');
 define('TRD_SRC_DIR', '../src/3rdparty/');
 
+//mysql test server
+$mysqlpass = '';
+$mysqluser = '';
+$mysqlhost = '';
+$mysqldb   = '';
+
+//cassandra test server
+$cashost   = '';
 
