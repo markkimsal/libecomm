@@ -11,6 +11,7 @@ class Lec_Resource_Loader {
 	static $searchWriteOpts       = array();
 	static $storageReadOpts       = array();
 	static $storageWriteOpts      = array();
+	static $drivers               = array('storage'=>'', 'search'=>'');
 
 	/**
 	 * Load a configured ORM 
@@ -70,20 +71,54 @@ class Lec_Resource_Loader {
 		require (LEC_LIB_DIR.'Resource/Driver/Search.php');
 
 		//scope
-		$p = Lec_Resource_Loader::$phemto;
-		if (function_exists('lec_setting')) {
-			$storageDriver = lec_setting('res_storage_driver');
-			$searchDriver  = lec_setting('res_search_driver');
-		} else {
-			//hardcoded examples
-			//$driver = 'Lec_Resource_Driver_Storage_Mysql';
-			$storageDriver = 'Lec_Resource_Driver_Storage_Dummy';
-			$searchDriver  = 'Lec_Resource_Driver_Search_Dummy';
+		$d = Lec_Resource_Loader::$drivers;
+		if ($d['storage'] == '') {
+			if (function_exists('lec_setting')) {
+				$storageDriver = lec_setting('res_storage_driver');
+			} else {
+				//hardcoded examples
+				$storageDriver = 'Lec_Resource_Driver_Storage_Dummy';
+			}
 		}
+		if ($d['search'] == '') {
+			if (function_exists('lec_setting')) {
+				$searchDriver  = lec_setting('res_search_driver');
+			} else {
+				$searchDriver  = 'Lec_Resource_Driver_Search_Dummy';
+			}
+		}
+		Lec_Resource_Loader::setStorageDriver($storageDriver, self::$storageReadOpts, self::$storageWriteOpts);
+		Lec_Resource_Loader::setSearchDriver($searchDriver);
+	}
 
-		//this is specifying 'mysql' for any required 'driver' call
-		$p->willUse(new Reused($storageDriver));
-		$p->fill('driverReadOpts', 'driverWriteOpts')->with(self::$storageReadOpts, self::$storageWriteOpts);
+	public static function setStorageDriver($driver, $readOpts='', $writeOpts='') {
+		Lec_Resource_Loader::$drivers['storage'] = $driver;
+
+		$p = Lec_Resource_Loader::$phemto;
+		if ($readOpts == '') {
+			$readOpts = self::$storageReadOpts;
+		}
+		if ($writeOpts == '') {
+			$writeOpts = self::$storageWriteOpts;
+		}
+		$p->willUse(new Reused($driver));
+		$p->fill('driverReadOpts', 'driverWriteOpts')->with($readOpts, $writeOpts);
+	}
+
+	public static function setSearchDriver($driver, $readOpts='', $writeOpts='') {
+		Lec_Resource_Loader::$drivers['search'] = $driver;
+
+		$p = Lec_Resource_Loader::$phemto;
+		if ($readOpts == '') {
+			$readOpts = self::$storageReadOpts;
+		}
+		if ($writeOpts == '') {
+			$writeOpts = self::$storageWriteOpts;
+		}
+		$p->willUse(new Reused($driver));
+		$p->fill('driverReadOpts', 'driverWriteOpts')->with($readOpts, $writeOpts);
+	}
+
 
 		/*
 $p->whenCreating('Lec_Resource_Driver_Storage')->forVariable('driverReadOpts')->willUse(new Value('path/to/templatedir'));
@@ -100,8 +135,6 @@ $p->whenCreating('Lec_Resource_Driver_Storage_Cassandra')->forVariable('driverRe
 			->willUse(new Value( self::$storageWriteOpts));
 		 */
 
-		$p->willUse(new Reused($searchDriver));
-
 		/*
 		$p->whenCreating($searchDriver)
 			->forVariable('driverReadOpts')
@@ -111,5 +144,4 @@ $p->whenCreating('Lec_Resource_Driver_Storage_Cassandra')->forVariable('driverRe
 			->forVariable('driverWriteOpts')
 			->willUse(new Value( self::$searchWriteOpts));
 		 */
-	}
 }
