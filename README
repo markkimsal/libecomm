@@ -1,3 +1,11 @@
 Lib Ecommerce
 =========================================================================
 PHP E-commerce library for developing any custom shopping cart.
+
+Features
+=========================================================================
+Works with SQL databases or Document Oriented Databases out of the box.
+
+ * Mysql
+ * Cassandra
+ * MongoDB
