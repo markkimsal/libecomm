@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * The Transaction Manager is a pipeline of configurable plugins designed
+ * to operate on an order.  For placing new orders you may have one 
+ * pipe line, for refunding payments you may have another pipeline, 
+ * for splitting orders to multiple shipments you may have yet 
+ * another pipeline.  You can also design a custom pipeline that 
+ * tries to split orders with any new orders.
+ */
 class Lec_Txn_Manager {
 
 	public static $plugins = array();
@@ -59,7 +67,7 @@ class Lec_Txn_Manager {
 				}
 			}
 		}
-		if (count($canHandle) == count($oTypes)) {
+		if (count($canHandle) >= count($oTypes)) {
 			return TRUE;
 		}
 		return FALSE;
@@ -68,4 +76,9 @@ class Lec_Txn_Manager {
 	public static function addPlugin($plugin) {
 		Lec_Txn_Manager::$plugins[] = $plugin;
 	}
+
+	public static function clearPlugins() {
+		Lec_Txn_Manager::$plugins = array();
+	}
+
 }
